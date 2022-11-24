@@ -85,17 +85,9 @@ def generate_rows(data: dict[dict]) -> 'Generator[list[any]]':
         Generator[list[any]]: table body row
     """
 
-    product_names = {
-        1: 'Tomato',
-        2: 'Potato',
-        3: 'Cucumber',
-        4: 'Pumkin',
-        5: 'Corn',
-    }
-
     for key in data:
         stat = data[key]
-        product_name = product_names[key]
+        product_name = Vegetable(key).name
         avg_price = round(stat['price_sum'] / stat['count'], DECIMALS)
         row = [product_name, avg_price]
         yield row
