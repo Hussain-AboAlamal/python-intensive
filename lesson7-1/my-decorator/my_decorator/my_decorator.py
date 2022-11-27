@@ -14,8 +14,7 @@ def day_abbr(func):
     """
     @wraps(func)
     def wrapper(*args, **kwargs):
-        result = func(*args, **kwargs)
-        result = zip(result, list(calendar.day_abbr))
+        result = zip(func(*args, **kwargs), list(calendar.day_abbr))
         for day, abbr in result:
             print(f"{day} abbreviation is {abbr}")
     return wrapper
