@@ -8,7 +8,7 @@ import aiohttp
 import aiofiles
 import requests
 
-SEPARATOR = os.sep
+
 DIRECTORY_PATH = 'pokemons'
 """The directory name that contains pokemons images
 """
@@ -28,7 +28,7 @@ async def get_pokemon(session, url):
         pokemon = await resp.json()
         # tasks = []
         content: list[str] = []
-        sprites: dict = pokemon['sprites'];
+        sprites: dict = pokemon['sprites']
         for key in sprites:
             sprite = sprites[key]
             if type(sprite) == str and sprite is not None:
@@ -55,15 +55,17 @@ async def main(items):
         original_pokemon = await asyncio.gather(*tasks)
 
         # delete and re-create pokemons directory
-        shutil.rmtree(DIRECTORY_PATH, ignore_errors=False, onerror=None)
+        if os.path.isdir(DIRECTORY_PATH):
+            shutil.rmtree(DIRECTORY_PATH, ignore_errors=False, onerror=None)
+
         os.makedirs(DIRECTORY_PATH)
 
         for pokemon in original_pokemon:
             # create a directory for each pokemon name
-            os.makedirs(f'{DIRECTORY_PATH}{SEPARATOR}{pokemon["name"]}')
+            os.makedirs(os.path.join(DIRECTORY_PATH, pokemon["name"]))
             for index, sprite in enumerate(pokemon['content']):
                 # create an image for each pokemon sprite
-                fName = f'{DIRECTORY_PATH}{SEPARATOR}{pokemon["name"]}{SEPARATOR}image{index+1}.jpg'
+                fName = os.path.join(DIRECTORY_PATH, pokemon["name"], f'image{index+1}.jpg')
                 async with aiofiles.open(fName, mode='wb') as file:
                     await file.write(sprite)
 
@@ -74,12 +76,12 @@ if __name__ == "__main__":
 
     # check that user has entered valid values
     if len(items) < 1:
-        print('You havn\'t entetred a valid values')
+        print('The values you entered are not valid')
         sys.exit()
     
     # calculate the running time of the process
     s = time.perf_counter()
-    print('Downloading iamges, it may take a while')
+    print('Downloading images, this may take a while')
     asyncio.run(main(items))
     elapsed = time.perf_counter() - s
     print(f"executed in {elapsed:0.2f} seconds.")
