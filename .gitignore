@@ -129,6 +129,7 @@ dmypy.json
 .pyre/
 
 #custom
+.vscode
 */pokemons
 lesson12/log.txt
 lesson12/output
